@@ -150,6 +150,7 @@ function ClearRates()
 
     //update the Newrate value being displayed onto the screen
     document.getElementById("Newrate").innerHTML = "0";
+    $(".wrap").empty();
 };
 
 // Function used to clear the screen of available services and their prices    
