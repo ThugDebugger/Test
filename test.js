@@ -10,9 +10,6 @@ var services = [];
 //Array used to store the rates of services
 var rates = [];
 
-//Array used to store the unique key identifier of the serivces added by the user (prevents user from removing services never added)
-var values = [];
-
 //Static starting rate of $200 init
 var currentRate = 200;
 
@@ -20,7 +17,7 @@ var currentRate = 200;
 function CurrentRate()
 {
     document.getElementById("Oldrate").innerHTML = 200;
-    document.getElementById("Newrate").innerHTML = 0;
+    document.getElementById("Newrate").innerHTML = 200;
 };
 
 //Function used to store the values entered into textboxes from test.html and perform error checking    
@@ -46,9 +43,7 @@ function  Store()
       document.getElementById("01").innerHTML = "VALUES STORED !";
 
       //push the value of p onto the services stack
-      services.push(p);
-
-      
+      services.push(p);   
 
       //push the values of q onto the rates stack
       rates.push(q);
@@ -94,8 +89,8 @@ function  Store()
           //appends the service and value to the <div> tag with the class of wrap, 
           //if the 'add service' link is clicked, the increaseRate function will be called with the variable 'rate' being passed
           //if the 'decreaseRate service' link is clicked, the decreaseRate function will be called with the variable 'rate' being passed 
-          //"i" is used as the unique identifier amoong the services, and is passed here as well to the increaseRate and decreaseRate functions to later be stored in the "values" array
-          $(".wrap").append(entry,': $', rate, ' ', '<br><a href = "#" id ="box'+i+'" value = "'+rate+'" onclick = "increaseRate('+rate+','+i+')">Add Service  </a><br>', '  ','<a href = "#" onclick = "decreaseRate('+rate+','+i+');">  Remove Service</a><br>', ' <br>');
+          //"i" is used as the unique identifier amoong the services, and is passed here as well to the increaseRate and decreaseRate functions to later be for identifying which id tag to be used for increasing or decrasing the quantity
+          $(".wrap").append(entry,': $', rate, ' ', '<br>Quantity: <a href = "#" id = "Qty'+i+'">0</a><br><a href = "#" id ="box'+i+'" value = "'+rate+'" class = "btn btn-success" onclick = "increaseRate('+rate+','+i+')">Add Service  </a>', '  ','<a href = "#" class = "btn btn-warning" onclick = "decreaseRate('+rate+','+i+');">  Remove Service</a><br>', ' <br>');
             i++;
         });
     }
@@ -109,18 +104,22 @@ function  Store()
     document.getElementById("1").focus();
 };
 
-//Function used to add rate values to the currentRate variable, responds to the 'add service' tag when clicked, and pass the "i" counter variable number to the "values" array
+//Function used to add rate values to the currentRate variable, responds to the 'add service' tag when clicked, and pass the "i" counter variable number to identify the proper quantity ID
 function increaseRate (rate,value)
 {  
     
     var check = rate + currentRate;
 
-            //error check to not allow negative final values and to allow the service to the "values" array
+    //parses the init quantity amount on the page to a INT value, to be later used to increase the amount
+    var Quantity = parseInt(document.getElementById("Qty"+value).text);
+
+            //error check to not allow negative final values and to allow the service to the "values" array, and increase the quantity amount on the page
             if (check >= 0)
             {
-            values.push(value);
             currentRate += rate;
+            Quantity++;
             document.getElementById("Newrate").innerHTML =currentRate;    
+            document.getElementById("Qty"+value).innerHTML =Quantity;  
             
             }
             else
@@ -130,36 +129,14 @@ function increaseRate (rate,value)
             }      
 };
 
-//Function used to subtract rate values from the currentRate variable, responds to the 'decreaseRate service' tag when clicked, and pass the "i" counter variable number to the "values" array
+//Function used to subtract rate values from the currentRate variable, responds to the 'decreaseRate service' tag when clicked, and pass the "i" counter variable number to identify the proper quantity ID
 function decreaseRate(rate,value)
 {
-    //counter variable init
-    var j = 0;
+    //parses the init quantity amount on the page to a INT value, to be later used to decrease the amount
+    var Quantity = parseInt(document.getElementById("Qty"+value).text);
 
-    //dog variable is init with the paramater "value" (dog is a random variable name, apart of my signature)
-    var dog = value;
-
-    // val is init to null 
-    var val = null;
-
-    //set the sentinel flag to false to begin, will change to true if the serivce value is found in the "values" array
-    var flag = false;
-
-    //loops through the "values" array which holds the list of services the user already added to their serivce
-    values.forEach(function(entry)
-    {
-        val = values[j]
-
-        //if the service being removed is found to be already added, the sentinel flag will be set to true
-        if (val == dog)
-        {
-            flag = true;
-        }
-        j++;
-    });
-
-    //if the sentinel flag is still set to flag, this decision structure will execute
-    if (flag == false)
+    //if the quantity is still at zero, this decision structure will execute
+    if (Quantity == 0)
     {
         alert("That service was never added");
     }
@@ -174,17 +151,18 @@ function decreaseRate(rate,value)
     }
     var check = currentRate - rate;
 
-    //error check to not allow negative final values, and remove the serivce from the "values" array
-    if(check >= 0)
+    //error check to not allow negative final values, and decrease the quantity amount on the page
+    if(check >= 0 && Quantity > 0)
     {
        currentRate -= rate;
+       Quantity-- ;
        document.getElementById("Newrate").innerHTML =currentRate; 
-       values.pop(value);
+       document.getElementById("Qty"+value).innerHTML =Quantity;  
     }
     else
     {
        //alert the user of the error
-        window.alert("Negative rates not allowed or you never added the service");
+        window.alert("Negative rates not allowed");
     }
 }
 };
@@ -200,7 +178,7 @@ function ClearRates()
     rates = [];
 
     //update the Newrate value being displayed onto the screen
-    document.getElementById("Newrate").innerHTML = "0";
+    document.getElementById("Newrate").innerHTML = "200";
     $(".wrap").empty();
 };
 
