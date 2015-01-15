@@ -38,9 +38,9 @@ function  Store()
     //Decision statement ONLY EXECUTES is both regex statements above evaluate to TRUE
     if(p_true && q_true)
     {
-      //Notifies the user their values were sucessfully stored
-      document.getElementById("00").innerHTML = "VALUES STORED !";
-      document.getElementById("01").innerHTML = "VALUES STORED !";
+
+     document.getElementById("00").innerHTML = null;
+     document.getElementById("01").innerHTML = null;
 
       //push the value of p onto the services stack
       services.push(p);   
@@ -52,13 +52,13 @@ function  Store()
     //If a foreign value is in the Service textbox, decision statement will execute
     else if(!p_true)
     {
-        document.getElementById("00").innerHTML = "Alphabetic and Numerical values only!";
+        document.getElementById("00").innerHTML = "Alphabetic and Numerical values only! eg: Java, Java1, Java S, or Java S1 ";
     }
 
     //If a foreign value is in the Service textbox, decision statement will execute
     else if(!q_true)
     {
-        document.getElementById("01").innerHTML = "Numerical values only (0-9) !";
+        document.getElementById("01").innerHTML = "Numerical values only (0-9) ! eg: 2 or 2.00";
     }
 
    //counter variable init
@@ -68,32 +68,21 @@ function  Store()
    var rate = 0;
 
 
-
-   //Decision statement ONLY executes if there are no values in the services array
-   if (services.length == 0)
-    {
-        //alerts the user of the error
-        window.alert("No Services Exist, please add services in the text boxes and click submit !")
-    }
-
-    //Else state executes by appending the values from the services textBox and their 
+    //appending the values from the services textBox and their 
     //associated rate values from the rates array to the <div> tag with the class of "wrap" in test.html
-    else
-    {
-      $(".wrap").empty();
-       services.forEach(function(entry)
-       {    
-          rate = rates[i];
+    $(".wrap").empty();
+    services.forEach(function(entry)
+    {    
+        rate = rates[i];
 
+        //appends the service and value to the <div> tag with the class of wrap, 
+        //if the 'add service' link is clicked, the increaseRate function will be called with the variable 'rate' being passed
+        //if the 'decreaseRate service' link is clicked, the decreaseRate function will be called with the variable 'rate' being passed 
+        //"i" is used as the unique identifier amoong the services, and is passed here as well to the increaseRate and decreaseRate functions to later be for identifying which id tag to be used for increasing or decrasing the quantity
+        $(".wrap").append(entry,': $', rate, ' ', '<br>Quantity: <a href = "#" id = "Qty'+i+'">0</a><br><a href = "#" id ="box'+i+'" value = "'+rate+'" class = "btn btn-success" onclick = "increaseRate('+rate+','+i+')">Add Service  </a>', '  ','<a href = "#" class = "btn btn-warning" onclick = "decreaseRate('+rate+','+i+');">  Remove Service</a><br>', ' <br>');
+        i++;
+     });
 
-          //appends the service and value to the <div> tag with the class of wrap, 
-          //if the 'add service' link is clicked, the increaseRate function will be called with the variable 'rate' being passed
-          //if the 'decreaseRate service' link is clicked, the decreaseRate function will be called with the variable 'rate' being passed 
-          //"i" is used as the unique identifier amoong the services, and is passed here as well to the increaseRate and decreaseRate functions to later be for identifying which id tag to be used for increasing or decrasing the quantity
-          $(".wrap").append(entry,': $', rate, ' ', '<br>Quantity: <a href = "#" id = "Qty'+i+'">0</a><br><a href = "#" id ="box'+i+'" value = "'+rate+'" class = "btn btn-success" onclick = "increaseRate('+rate+','+i+')">Add Service  </a>', '  ','<a href = "#" class = "btn btn-warning" onclick = "decreaseRate('+rate+','+i+');">  Remove Service</a><br>', ' <br>');
-            i++;
-        });
-    }
     //Clear the Services textbox once user submitted data
     document.getElementById("1").value = null;
 
@@ -102,6 +91,7 @@ function  Store()
 
     //Move the users cursor back to the services textbox to allow for more input easily 
     document.getElementById("1").focus();
+
 };
 
 //Function used to add rate values to the currentRate variable, responds to the 'add service' tag when clicked, and pass the "i" counter variable number to identify the proper quantity ID
@@ -179,6 +169,8 @@ function ClearRates()
 
     //update the Newrate value being displayed onto the screen
     document.getElementById("Newrate").innerHTML = "200";
+    document.getElementById("00").innerHTML = null;
+    document.getElementById("01").innerHTML = null;
     $(".wrap").empty();
 };
 
